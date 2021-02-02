@@ -75,6 +75,25 @@ class CounterCubit extends Cubit<int> {
 
 ※`emit()`はprotectedなメソッドなので、Cubeの子クラス以外からは呼べないので安心。  
 
+### onChange
+そのCubitのなで、状態の更新を契機にして何か処理をしたい場合は、`onChange`メソッドをオーバーライドする。  
+
+```dart
+  @override
+  void onChange(Change<int> change) {
+    print(change);
+    super.onChange(change);
+  }
+```
+
+以下のような出力がえられる。  
+
+```
+Change { currentState: 0, nextState: 1 }
+Change { currentState: 1, nextState: 2 }
+```
+`onChange`は実際に状態が変更される直前に実行される。  
+そのため、`currentState`が現在の状態、`nextState`がこれから変更される状態になる。  
 
 
 
