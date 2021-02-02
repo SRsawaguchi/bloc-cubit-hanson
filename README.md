@@ -129,3 +129,37 @@ CounterCubit Change { currentState: 1, nextState: 2 }
 ```
 
 ※Bloc.observerのonChangeはCubitのonChangeの後に呼び出される。
+
+### StreamとしてのCubit
+CubitはStreamなので、以下のようにStreamとしても使える。  
+
+```dart
+void exampleOfCubitStream() async {
+  final cubit = CounterCubit();
+  final subscription = cubit.listen((state) {
+    print('state changed: ${state}');
+  });
+
+  cubit.increment();
+  await Future.delayed(Duration.zero);
+  await subscription.cancel();
+  await cubit.close();
+}
+
+void main() {
+  exampleOfCubitStream();
+}
+```
+
+※dartの処理系は`exampleOfCubitStream()`の処理が終わるまでプログラムの終了を待機してくれる。  
+
+このコードを実行すると、以下が得られる。  
+
+```
+Change { currentState: 0, nextState: 1 }
+state changed: 1
+```
+
+このように、状態が更新されると、`cubit.listen()`で登録した関数が呼び出される。  
+これを解除するには、`subscription.cancel()`を実行する。  
+

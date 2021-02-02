@@ -9,7 +9,19 @@ void exampleOfBasicUsage() {
   print(cubit.state); // 2
 }
 
+void exampleOfCubitStream() async {
+  final cubit = CounterCubit();
+  final subscription = cubit.listen((state) {
+    print('state changed: ${state}');
+  });
+
+  cubit.increment();
+  await Future.delayed(Duration.zero);
+  await subscription.cancel();
+  await cubit.close();
+}
+
 void main() {
-  Bloc.observer = SimpleBlocObserver();
-  exampleOfBasicUsage();
+  // Bloc.observer = SimpleBlocObserver();
+  exampleOfCubitStream();
 }
