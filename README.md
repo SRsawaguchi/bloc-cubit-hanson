@@ -95,5 +95,37 @@ Change { currentState: 1, nextState: 2 }
 `onChange`は実際に状態が変更される直前に実行される。  
 そのため、`currentState`が現在の状態、`nextState`がこれから変更される状態になる。  
 
+### グローバルなonChange
+大きいアプリでは、複数のCubitが定義されていが普通。  
+そして、そのアプリ内の全てのCubitについて、状態が変わったら特定の処理を行いたい場合は、グローバルな`onChange`が利用できる。  
 
+まずは、以下のように`BlocObserver`を継承したクラスを作成する。  
 
+```dart
+import 'package:bloc/bloc.dart';
+
+class SimpleBlocObserver extends BlocObserver {
+  @override
+  void onChange(Cubit cubit, Change change) {
+    print('${cubit.runtimeType} $change');
+    super.onChange(cubit, change);
+  }
+}
+```
+
+そして、`main`関数無いで、`Bloc.observer`に設定する。  
+
+```dart
+  Bloc.observer = SimpleBlocObserver();
+```
+
+実行すると、以下が得られる。  
+
+```
+Change { currentState: 0, nextState: 1 }
+CounterCubit Change { currentState: 0, nextState: 1 }
+Change { currentState: 1, nextState: 2 }
+CounterCubit Change { currentState: 1, nextState: 2 }
+```
+
+※Bloc.observerのonChangeはCubitのonChangeの後に呼び出される。

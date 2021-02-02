@@ -1,4 +1,7 @@
+import 'package:bloc/bloc.dart';
+
 import './counter_cubit.dart';
+import './simple_bloc_observer.dart';
 
 void exampleOfBasicUsage() {
   var cubit = CounterCubit();
@@ -7,5 +10,6 @@ void exampleOfBasicUsage() {
 }
 
 void main() {
+  Bloc.observer = SimpleBlocObserver();
   exampleOfBasicUsage();
 }
