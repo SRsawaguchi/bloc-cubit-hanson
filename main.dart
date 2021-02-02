@@ -21,7 +21,14 @@ void exampleOfCubitStream() async {
   await cubit.close();
 }
 
+void exampleOfErrorHandling() {
+  CounterCubit()
+    ..decrement()
+    ..close();
+}
+
 void main() {
   // Bloc.observer = SimpleBlocObserver();
-  exampleOfCubitStream();
+  // exampleOfCubitStream();
+  exampleOfErrorHandling();
 }

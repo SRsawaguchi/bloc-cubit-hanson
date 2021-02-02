@@ -163,3 +163,56 @@ state changed: 1
 このように、状態が更新されると、`cubit.listen()`で登録した関数が呼び出される。  
 これを解除するには、`subscription.cancel()`を実行する。  
 
+### エラーハンドリング
+Cubitの処理で発生したエラーは`addError()`で追加できる。  
+また、エラーが発生したことをobserveするには、`onError()`をオーバライドする。  
+
+
+```dart
+import 'package:bloc/bloc.dart';
+
+class CounterCubit extends Cubit<int> {
+  CounterCubit() : super(0);
+
+  // 省略
+
+  void decrement() {
+    if (state <= 0) {
+      addError(Exception('cannot decrement!'), StackTrace.current);
+      return;
+    }
+    return emit(state - 1);
+  }
+
+  @override
+  void onError(Object error, StackTrace stackTrace) {
+    print('$error, $stackTrace');
+    super.onError(error, stackTrace);
+  }
+}
+
+```
+
+また、`main()`は以下のようにする。  
+
+```dart
+void main() {
+  CounterCubit()
+    ..decrement()
+    ..close();
+}
+```
+
+実行すると、以下のような出力が得られる。  
+
+```
+Exception: cannot decrement!, #0      CounterCubit.decrement (file://**)
+#1      exampleOfErrorHandling (file://**)
+#2      main (file://**)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:301:19)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:168:12)
+```
+
+なお、`onError`は`BlocObserver`でもオーバーライドできる。  
+その場合は、`onChange`と同様、全てのCubitにおいて、エラーが発生したことをobserveできる。  
+
